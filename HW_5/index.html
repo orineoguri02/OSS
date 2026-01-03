@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CRUD and MookAPI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+    <style>
+      body {
+        padding: 20px;
+      }
+      .main-card {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .action-bar {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+      .btn-action {
+        background: none;
+        border: none;
+        cursor: pointer;
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main-card">
+      <div id="message"></div>
+      
+      <div class="action-bar">
+        <h3 class="mb-0">User List</h3>
+        <div>
+          <button class="btn btn-secondary" id="btnRefresh">
+            <i class="bi bi-arrow-clockwise"></i> Refresh
+          </button>
+          <button class="btn btn-primary" id="btnShowModal">
+            <i class="bi bi-person-plus-fill"></i> Add User
+          </button>
+        </div>
+      </div>
+
+      <div id="contents">
+        <div class="text-center py-5">
+          <div class="spinner-border text-primary" role="status"></div>
+          <p class="mt-3">데이터를 불러오는 중...</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="userModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalTitle">
+              <i class="bi bi-person-plus-fill"></i> <span id="modalTitleText">Add User</span>
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <form id="userForm">
+              <input type="hidden" id="userId" />
+              <div class="mb-3">
+                <label class="form-label"><i class="bi bi-person"></i> Name</label>
+                <input type="text" class="form-control" id="userName" required />
+              </div>
+              <div class="mb-3">
+                <label class="form-label"><i class="bi bi-envelope"></i> Email</label>
+                <input type="email" class="form-control" id="userEmail" required />
+              </div>
+              <div class="mb-3">
+                <label class="form-label"><i class="bi bi-calendar"></i> Age</label>
+                <input type="number" class="form-control" id="userAge" min="1" max="150" required />
+              </div>
+              <div class="mb-3">
+                <label class="form-label"><i class="bi bi-geo-alt"></i> City</label>
+                <input type="text" class="form-control" id="userCity" required />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="btnSave">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap 사용해서 모달 만듬 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      const API_URL = "https://6916b719a7a34288a27e1f78.mockapi.io/users";
+      let userModal;
+      let isEditMode = false;
+
+      window.onload = function () {
+        userModal = new bootstrap.Modal(document.getElementById("userModal"));
+        document.getElementById("btnShowModal").addEventListener("click", () => showModal());
+        document.getElementById("btnRefresh").addEventListener("click", getUsers);
+        document.getElementById("btnSave").addEventListener("click", saveUser);
+        getUsers();
+      };
+
+      function showModal(user = null) {
+        isEditMode = !!user;
+        document.getElementById("modalTitleText").textContent = isEditMode ? "Edit User" : "Add User";
+        document.getElementById("userForm").reset();
+        
+        if (user) {
+          document.getElementById("userId").value = user.id;
+          document.getElementById("userName").value = user.name;
+          document.getElementById("userEmail").value = user.email;
+          document.getElementById("userAge").value = user.age;
+          document.getElementById("userCity").value = user.city;
+        }
+        userModal.show();
+      }
+
+      function getUsers() {
+        document.getElementById("contents").innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary"></div><p class="mt-3">Loading...</p></div>';
+        
+        
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", API_URL);
+        xhr.onload = () => {
+          if (xhr.status === 200) {
+            makeList(JSON.parse(xhr.response));
+          } else {
+            showMessage("Failed to load users", "danger");
+          }
+        };
+        xhr.send();
+      }
+
+      function makeList(data) {
+        const contents = document.getElementById("contents");
+        
+        if (!data || data.length === 0) {
+          contents.innerHTML = '<div class="text-center py-5"><i class="bi bi-inbox" style="font-size:4rem;opacity:0.5"></i><h4>No users found</h4></div>';
+          return;
+        }
+
+        let html = '<table class="table table-hover"><thead class="table-primary"><tr><th>ID</th><th>Name</th><th>Email</th><th>Age</th><th>City</th><th>Action</th></tr></thead><tbody>';
+        
+        data.forEach(user => {
+          html += `
+            <tr>
+              <td><strong>${user.id}</strong></td>
+              <td><strong>${user.name}</strong></td>
+              <td><i class="bi bi-envelope"></i> ${user.email}</td>
+              <td>${user.age}</td>
+              <td><i class="bi bi-geo-alt-fill"></i> ${user.city}</td>
+              <td>
+                <button class="btn-action" onclick='editUser(${JSON.stringify(user)})'>Edit</button>
+                <button class="btn-action" onclick="deleteUser('${user.id}')">Delete</button>
+              </td>
+            </tr>
+          `;
+        });
+        
+        html += '</tbody></table>';
+        contents.innerHTML = html;
+      }
+
+      function saveUser() {
+        const name = document.getElementById("userName").value;
+        const email = document.getElementById("userEmail").value;
+        const age = document.getElementById("userAge").value;
+        const city = document.getElementById("userCity").value;
+
+        if (!name || !email || !age || !city) {
+          showMessage("모든 필드를 입력해주세요", "warning");
+          return;
+        }
+
+        const data = { name, email, age: parseInt(age), city };
+        const xhr = new XMLHttpRequest();
+        
+        if (isEditMode) {
+          const id = document.getElementById("userId").value;
+          xhr.open("PUT", `${API_URL}/${id}`);
+        } else {
+          xhr.open("POST", API_URL);
+        }
+        
+        xhr.setRequestHeader("content-type", "application/json");
+        xhr.onload = () => {
+          if (xhr.status === 200 || xhr.status === 201) {
+            showMessage(`데이터 ${isEditMode ? '수정' : '추가'} 성공!`, "success");
+            userModal.hide();
+            getUsers();
+          } else {
+            showMessage("Operation failed", "danger");
+          }
+        };
+        xhr.send(JSON.stringify(data));
+      }
+
+      function editUser(user) {
+        showModal(user);
+      }
+
+      function deleteUser(id) {
+        if (!confirm("유저 데이터를 삭제하시겠습니까?")) return;
+        
+        const xhr = new XMLHttpRequest();
+        xhr.open("DELETE", `${API_URL}/${id}`);
+        xhr.onload = () => {
+          if (xhr.status === 200) {
+            showMessage("유저 데이터 삭제 성공!", "success");
+            getUsers();
+          } else {
+            showMessage("유저 데이터 삭제 실패!", "danger");
+          }
+        };
+        xhr.send();
+      }
+
+      function showMessage(message, type) {
+        const icons = { success: "check-circle-fill", danger: "exclamation-triangle-fill", warning: "exclamation-circle-fill" };
+        document.getElementById("message").innerHTML = `
+          <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            <i class="bi bi-${icons[type]}"></i> ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        `;
+        setTimeout(() => { document.getElementById("message").innerHTML = ""; }, 5000);
+      }
+    </script>
+  </body>
+</html>

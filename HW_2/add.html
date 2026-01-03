@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="my.css">
+    <title>목록 추가하기</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <h1 class="logo">GeonWoo's Shop</h1>
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="add.html">Add</a>
+        <a href="">my page</a>
+      </nav>
+    </header>
+
+    <main class="container">
+      <form>
+      <input type="text" placeholder="상품명" />
+      <input type="text" placeholder="품목" />
+      <input type="text" placeholder="가격" />
+      <input type="text" placeholder="수량" />
+      <select id="status">
+        <option value="재고있음">재고있음</option>
+        <option value="재고없음">재고없음</option>
+        <option value="한정수량">한정수량</option>
+      </select>
+      <button type="submit">확인</button>
+      <button type="button" onclick="location.href='index.html'">취소</button>
+      </form>
+    </main>
+    <script>
+      const form = document.querySelector('form');
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const productNameInput = document.querySelector('input[placeholder="상품명"]');
+        const productTypeInput = document.querySelector('input[placeholder="품목"]');
+        const priceInput = document.querySelector('input[placeholder="가격"]');
+        const quantityInput = document.querySelector('input[placeholder="수량"]');
+        const statusSelect = document.getElementById('status');
+
+        const productName = (productNameInput.value || '').trim();
+        const productType = (productTypeInput.value || '').trim();
+        const priceStr = (priceInput.value || '').trim();
+        const quantityStr = (quantityInput.value || '').trim();
+        const status = (statusSelect.value || '').trim();
+
+        const errors = [];
+
+        if (productName.length === 0) {
+          errors.push('상품명을 입력하세요.');
+        } 
+
+        let price = Number(priceStr.replace(/,/g, ''));
+        if (priceStr.length === 0) {
+          errors.push('가격을 입력하세요.');
+        } else if (!/^[-+]?\d*(?:\.\d+)?$/.test(priceStr)) {
+          errors.push('가격은 숫자만 입력하세요.');
+        } else if (!(price > 0)) {
+          errors.push('가격은 0보다 큰 값이어야 합니다.');
+        }
+
+        let quantity = Number(quantityStr);
+        if (quantityStr.length === 0) {
+          errors.push('수량을 입력하세요.');
+        }  else if (!(quantity > 0)) {
+          errors.push('수량은 0보다 큰 값이어야 합니다.');
+        }
+
+        if (productType.length === 0) {
+          errors.push('품목을 입력하세요.');
+        }
+
+        if (errors.length > 0) {
+          alert(errors.join('\n'));
+          const firstError = errors[0];
+          if (firstError.includes('상품명')) productNameInput.focus();
+          else if (firstError.includes('가격')) priceInput.focus();
+          else if (firstError.includes('수량')) quantityInput.focus();
+          else if (firstError.includes('품목')) productTypeInput.focus();
+          return;
+        }
+
+        alert('게시물이 추가됩니다');
+      });
+    </script>
+  </body>
+</html>

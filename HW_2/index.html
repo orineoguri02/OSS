@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="my.css">
+
+
+    <title>index.html</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <h1 class="logo">GeonWoo's Shop</h1>
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="add.html">Add</a>
+        <a href="">my page</a>
+      </nav>
+    </header>
+
+    <main class="container">
+      <section>
+        <div class="search">
+          <input type="text" placeholder="원하는 상품을 검색하세요" class="search-input">
+          <button class="search-button" type="button">Search</button>
+        </div>
+      </section>
+      <section>
+        <div class="product-list">
+          <div class="product-card">
+            <h3>상품 1</h3>
+            <p>품목: 전자기기</p>
+            <p>가격: 120,000원</p>
+            <p>수량: 5</p>
+            <p>상태: 재고있음</p>
+          </div>
+          <div class="product-card">
+            <h3>상품 2</h3>
+            <p>품목: 생활용품</p>
+            <p>가격: 15,000원</p>
+            <p>수량: 12</p>
+            <p>상태: 재고있음</p>
+          </div>
+          <div class="product-card">
+            <h3>상품 3</h3>
+            <p>품목: 패션</p>
+            <p>가격: 49,000원</p>
+            <p>수량: 7</p>
+            <p>상태: 재고있음</p>
+          </div>
+          <div class="product-card">
+            <h3>상품 4</h3>
+            <p>품목: 도서</p>
+            <p>가격: 18,000원</p>
+            <p>수량: 22</p>
+            <p>상태: 재고있음</p>
+          </div>
+          <div class="product-card">
+            <h3>상품 5</h3>
+            <p>품목: 전자기기</p>
+            <p>가격: 990,000원</p>
+            <p>수량: 1</p>
+            <p>상태: 재고없음</p>
+          </div>
+          <div class="product-card">
+            <h3>상품 6</h3>
+            <p>품목: 생활용품</p>
+            <p>가격: 9,900원</p>
+            <p>수량: 60</p>
+            <p>상태: 재고있음</p>
+          </div>
+          <div class="product-card">
+            <h3>상품 7</h3>
+            <p>품목: 식품</p>
+            <p>가격: 5,500원</p>
+            <p>수량: 100</p>
+            <p>상태: 재고있음</p>
+          </div>
+          <div class="product-card">
+            <h3>상품 8</h3>
+            <p>품목: 패션</p>
+            <p>가격: 79,000원</p>
+            <p>수량: 3</p>
+            <p>상태: 재고없음</p>
+          </div>
+          <div class="product-card">
+            <h3>상품 9</h3>
+            <p>품목: 도서</p>
+            <p>가격: 12,000원</p>
+            <p>수량: 40</p>
+            <p>상태: 재고있음</p>
+          </div>
+          <div class="product-card">
+            <h3>상품 10</h3>
+            <p>품목: 전자기기</p>
+            <p>가격: 59,000원</p>
+            <p>수량: 14</p>
+            <p>상태: 재고있음</p>
+          </div>
+          <div class="product-card">
+            <h3>상품 11</h3>
+            <p>품목: 생활용품</p>
+            <p>가격: 3,000원</p>
+            <p>수량: 200</p>
+            <p>상태: 재고있음</p>
+          </div>
+          <div class="product-card">
+            <h3>상품 12</h3>
+            <p>품목: 식품</p>
+            <p>가격: 2,500원</p>
+            <p>수량: 150</p>
+            <p>상태: 재고있음</p>
+          </div>
+          <div class="product-card">
+            <h3>상품 13</h3>
+            <p>품목: 패션</p>
+            <p>가격: 129,000원</p>
+            <p>수량: 2</p>
+            <p>상태: 재고없음</p>
+          </div>
+          <div class="product-card">
+            <h3>상품 14</h3>
+            <p>품목: 도서</p>
+            <p>가격: 22,000원</p>
+            <p>수량: 18</p>
+            <p>상태: 재고있음</p>
+          </div>
+          <div class="product-card">
+            <h3>상품 15</h3>
+            <p>품목: 전자기기</p>
+            <p>가격: 19,000원</p>
+            <p>수량: 9</p>
+            <p>상태: 재고있음</p>
+          </div>
+          <div class="product-card">
+            <h3>상품 16</h3>
+            <p>품목: 생활용품</p>
+            <p>가격: 8,000원</p>
+            <p>수량: 30</p>
+            <p>상태: 재고있음</p>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script>
+      (function attachTitleClicks(){
+        const cards = document.querySelectorAll('.product-card');
+        cards.forEach((card) => {
+          const titleEl = card.querySelector('h3');
+          if (!titleEl) return;
+          titleEl.style.cursor = 'pointer';
+          titleEl.addEventListener('click', () => {
+            const name = (titleEl.textContent || '').trim();
+            const typeText = (card.querySelector('p:nth-of-type(1)')?.textContent || '').split(':')[1] || '';
+            const priceText = (card.querySelector('p:nth-of-type(2)')?.textContent || '').split(':')[1] || '';
+            const quantityText = (card.querySelector('p:nth-of-type(3)')?.textContent || '').split(':')[1] || '';
+            const statusText = (card.querySelector('p:nth-of-type(4)')?.textContent || '').split(':')[1] || '';
+
+            const type = typeText.trim();
+            const priceNum = Number((priceText.match(/[\d,]+/)?.[0] || '0').replace(/,/g, ''));
+            const quantityNum = Number((quantityText.match(/\d+/)?.[0] || '0'));
+            const status = statusText.trim();
+
+            const params = new URLSearchParams({
+              name,
+              type,
+              price: String(priceNum),
+              quantity: String(quantityNum),
+              status
+            });
+            location.href = 'view.html?' + params.toString();
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="my.css">
+    <title>게시물 보기</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <h1 class="logo">GeonWoo's Shop</h1>
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="add.html">Add</a>
+        <a href="">my page</a>
+      </nav>
+    </header>
+
+    <main class="container">
+      <div class="detail-container">
+        <h1 id="title" class="detail-title">제목</h1>
+
+        <div class="detail-info">
+          <div><strong>품목</strong> <span id="type"></span></div>
+          <div><strong>가격</strong> <span id="price"></span></div>
+          <div><strong>수량</strong> <span id="quantity"></span></div>
+          <div><strong>상태</strong> <span id="status"></span></div>
+        </div>
+
+        <div class="button-group">
+          <button type="button" onclick="location.href='add.html'">추가</button>
+          <button type="button" onclick="onEdit()">수정</button>
+          <button type="button" onclick="onDelete()">삭제</button>
+          <button type="button" onclick="location.href='index.html'">목록</button>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      function getParam(name) {
+        const params = new URLSearchParams(location.search);
+        return (params.get(name) || '').trim();
+      }
+
+      function onEdit() {
+        const name = getParam('name');
+        const type = getParam('type');
+        const price = getParam('price');
+        const quantity = getParam('quantity');
+        const status = getParam('status');
+        
+        const params = new URLSearchParams({
+          name: name,
+          type: type,
+          price: price,
+          quantity: quantity,
+          status: status
+        });
+        
+        location.href = 'edit.html?' + params.toString();
+      }
+
+      function onDelete() {
+        if (confirm('게시물을 삭제할까요?')) {
+          location.href = 'index.html';
+        }
+      }
+
+      (function render() {
+        const name = getParam('name');
+        const type = getParam('type');
+        const priceStr = getParam('price');
+        const quantityStr = getParam('quantity');
+        const status = getParam('status');
+
+        const priceNum = Number(String(priceStr).replace(/,/g, ''));
+        const price = Number.isFinite(priceNum) ? priceNum.toLocaleString() : priceStr;
+
+        document.getElementById('title').textContent = name;
+        document.getElementById('type').textContent = type;
+        document.getElementById('price').textContent = price + ' 원';
+        document.getElementById('quantity').textContent = quantityStr + ' 개';
+        document.getElementById('status').textContent = status;
+      })();
+    </script>
+  </body>
+</html>
